@@ -19,6 +19,20 @@ class api {
   async getData() {
 
   }
+  async getUser() {
+    const credentials = JSON.parse(localStorage.getItem('credentials'));
+    const accessToken = credentials.token;
+
+    const data = await axios({
+      method: 'GET',
+      url: `${this.baseUrl}/get-user?access_token=${accessToken}`,
+    }).then(res => {
+      console.log('user', res);
+    }).catch(err => {
+      console.error(err);
+    });
+    return data;
+  }
 }
 
 export default new api();

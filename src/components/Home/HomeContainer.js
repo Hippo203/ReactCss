@@ -13,8 +13,9 @@ class HomeContainer extends Component {
     const hasCredentials = localStorage.getItem('credentials');
 
     if (hasCredentials) {
+      const user = await api.getUser();
+      console.log(user);
       this.setState({ loggedIn: true });
-      // call api.getUser(token) and sent back token to server to use it
     };
 
     const stuff = await api.setToken(parsed.code);
