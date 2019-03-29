@@ -1,35 +1,27 @@
-import React, { Component } from 'react';
-import queryString from 'query-string';
-import api from '../../helpers/api';
+import React, { Component, createRef } from 'react';
 import Home from './Home';
+import { apiUrl } from '../../constants/config';
 
 class HomeContainer extends Component {
   state = {
-    loggedIn: false,
-  };
+    movies: [],
+  }; 
 
-  async componentDidMount() {
-    const parsed = queryString.parse(window.location.search);
-    const hasCredentials = localStorage.getItem('credentials');
+  searchInput = createRef();
 
-    if (hasCredentials) {
-      const user = await api.getUser();
-      console.log(user);
-      this.setState({ loggedIn: true });
-    };
-
-    const stuff = await api.setToken(parsed.code);
-    console.log(stuff);
-  }
-
-  componentDidUpdate() {
-    console.log('updated');
+  submitForm = (event) => {
+    event.preventDefault();
+    const query = this.searchInput.current.value;
+  
+    fetch(apiUrl(query)).then(resp => {
+      resp.json().then(r => this.setState({movies : r.Search }));
+        }).catch(err =>console.error(err))
   }
 
   render() {
-    const { loggedIn } = this.state;
-    return <Home loggedIn={loggedIn} />;
+    return <Home searchInput={this.searchInput} submitValue={this.submitForm} movies={this.state.movies}/>;
   }
 }
 
 export default HomeContainer;
+
